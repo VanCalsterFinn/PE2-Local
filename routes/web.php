@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +21,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get("/dashboard", [DashboardController::class, 'index']);
 Route::get("/invoices", [InvoiceController::class, 'index']);
+Route::get("/employees", [EmployeeController::class, 'index']);
+
+Route::controller(LoginController::class)->group(function () {
+    Route::get('/login', 'index');
+    Route::post('/login', 'authenticate');
+    Route::get('/logout', 'logout');
+});
