@@ -13,6 +13,7 @@
             <th>Price</th>
             <th>Status</th>
             <th>Due Date</th>
+            <th>Action</th>
         </tr>
         @foreach ($invoices as $invoice)
         <tr class="mx-10">
@@ -23,6 +24,10 @@
             <td>${{ $invoice->price }}</td>
             <td>{{ $invoice->status }}</td>
             <td>{{ $invoice->due_date }}</td>
+            <td>
+                <button><a href="/invoices/{{ $invoice->id }}/mail"><img src="/mail.png" alt="" class="w-6 h-6"></a></button>
+                <button><a href="/invoices/{{ $invoice->id }}/download"><img src="/downloads.png" alt="" class="w-6 h-6"></a></button>
+            </td>
         </tr>
         @endforeach
     </table>
