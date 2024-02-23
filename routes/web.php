@@ -25,7 +25,7 @@ Route::get("/dashboard", [DashboardController::class, 'index']);
 Route::controller(InvoiceController::class)->group(function () {
     Route::get('/invoices', 'index');
     Route::get('/invoices/{id}/mail', 'sendMail');
-    Route::get('/invoices/{id}/download', 'logout');
+    Route::get('/invoices/{id}/download', 'download');
 });
 Route::get("/employees", [EmployeeController::class, 'index']);
 
