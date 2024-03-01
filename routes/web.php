@@ -23,10 +23,11 @@ Route::get('/', function () {
 
 Route::get("/dashboard", [DashboardController::class, 'index']);
 Route::controller(InvoiceController::class)->group(function () {
-    Route::get('/invoices', 'index');
-    Route::get('/invoices/{id}/mail', 'sendMail');
-    Route::get('/invoices/{id}/download', 'download');
+    Route::get('/invoices', 'index')->name('invoice.index');
+    Route::get('/invoices/{id}/mail', 'sendMail')->name('invoice.mail');
+    Route::get('/invoices/{id}/download', 'download')->name('invoice.download');
 });
+
 Route::get("/employees", [EmployeeController::class, 'index']);
 
 Route::controller(LoginController::class)->group(function () {
