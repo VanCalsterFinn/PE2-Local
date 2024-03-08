@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\Invoice as MailInvoice;
 use App\Mail\MailReadingsRequest;
 use App\Models\Invoice;
+use App\Models\InvoiceLine;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
@@ -78,16 +79,28 @@ class InvoiceController extends Controller
             }
 
         }
+        //Now the customers without meter readings have been dealt with, we can make invoices for the customers we have readings from
+        foreach($customersWithReadings as $customer){
+            $Consumptions = DB::table('Customers')
+            ->join('CustomerAddress', 'Customers.id', '=', 'CustomerAddress.CustomerID')
+            ->join('Address', 'CustomerAddress.AddressID', '=', 'Address.id')
+            ->join('AddressMeter', 'Address.id', '=', 'AddressMeter.AddressID')
+            ->join('Meter', 'AddressMeter.MeterID', '=', 'Meter.id')
+            ->join('Index', 'Meter.id', '=', 'Index.MeterID')
+            ->join('Consumption', 'Index.id', '=', 'Cunsumption.CurrentIndexID')
+            ->whereYear('Index.ReadingDate', '=', $year)
+            ->where('Customers.id', '=', $customer->id)
+            ->select('Consumption.*')
+            ->get();
+            $invoice = Invoice::create();
+            $lastInserted = $invoice->id;
+            foreach($Consumptions as $consumption){
+                InvoiceLine::create($consumption, $lastInserted);
+            }
+            
+        }
 
 
-
-
-        Invoice::create($request->all());
-        /*
-      foreach ($lines as $line) {
-        InvoiceLine::create($line);
-      }
-      */
         return redirect()->route('invoice.index')
             ->with('success', 'Post created successfully.');
     }
